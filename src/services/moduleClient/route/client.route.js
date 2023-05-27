@@ -4,6 +4,7 @@ const {clientController}= require('../http/controller')
 const { body } = require('express-validator')
 const {Validator} = require('../../moduleUser/http/middleware')
 const {ClientData} = require('../http/middleware')
+const cors = require('cors')
 
 class clientRoutes extends Routerjs{
     constructor(app){
@@ -11,6 +12,7 @@ class clientRoutes extends Routerjs{
     }
 
     getRoutes(){
+        this.app.use(cors)
         this.app.get(
             '/test/client', 
             (_req, res)=>{
@@ -53,6 +55,15 @@ class clientRoutes extends Routerjs{
                 let newClientData = req.body
                 let idClient = req.params.id
                 return Utils.apiResponse(res, clientController.update(newClientData, idClient))
+            }
+        )
+
+        this.app.get(
+            '/client/delete/:id',
+            ClientData.existClientId,
+            (req, res)=>{
+                let idClient = req.params.id
+                return Utils.apiResponse(res, clientController.deleteClientbyId(idClient))
             }
         )
     }

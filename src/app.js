@@ -4,7 +4,6 @@ const {clientRoutes} = require('./services/moduleClient/route')
 const {InterlocuteurRoutes}= require('./services/moduleInterlocuteur/routes')
 const {InterventionsRoutes}=require('./services/moduleInterventions/routes')
 require('./utils/config')
-require('./core/router/services/index')
 
 const server = new Server
 server.handle400()

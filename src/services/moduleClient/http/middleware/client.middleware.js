@@ -38,6 +38,30 @@ class ClientData{
         next()
     }
 
+    static async existClientId(req, res, next){
+        const connexion = mysqlHelper.getInstance()
+        let idclient = req.params.id
+
+        if(!idclient || idclient==':id')
+            return Utils.apiResponse(res, Promise.resolve({
+                status: 422 ,
+                message: "Id invalide",
+                data: null,
+                error: true
+            }))
+        
+        const sql = 'SELECT * FROM client WHERE idClt = ?';
+        const oneClient = await query(connexion, sql, [idclient]);
+        if(!oneClient.data)
+            return Utils.apiResponse(res, Promise.resolve({
+                status: 422,
+                message: "Le client n'exist pas",
+                data: null,
+                error: true
+            }))
+        
+        next()
+    }
 
     static async existClientTrue(req, res, next){
         const connexion = mysqlHelper.getInstance()

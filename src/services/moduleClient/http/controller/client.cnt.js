@@ -28,7 +28,7 @@ const clientController ={
         return Promise.resolve({status:200, error: false, message: "Client Modifier", data: result.data})
     },
     getAllClient: async()=>{
-        const sql = 'SELECT * FROM client ORDER BY dateCreation DESC';
+        const sql = 'SELECT * FROM client where statusClientNovago=1 ORDER BY dateCreation DESC';
         const clients = await query(connexion, sql)
         return Promise.resolve({status:200, error: false, message: 'Liste des clients', data: clients.data})
     },
@@ -37,6 +37,13 @@ const clientController ={
         const oneClient = await query(connexion, sql, [idClt])
         return Promise.resolve({status:200, error: false, message: 'Client', data: oneClient.data})
 
+    },
+    deleteClientbyId: async(idClt)=>{
+        const sql = 'UPDATE client SET statusClientNovago=2,dateModification=NOW() WHERE idClt=?'
+        const result = await query(connexion, sql,[
+            idClt
+        ])
+        return Promise.resolve({status:202,error: false, message: "Client Archiver", data: result.data})
     }
 }
 
