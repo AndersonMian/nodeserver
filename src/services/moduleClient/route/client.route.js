@@ -28,11 +28,13 @@ class clientRoutes extends Routerjs{
             '/client/all',
             JwtMiddleware.checktoken,
             (req, res)=>{
+                //JwtMiddleware.verifyLevel(req.technicien.accesLvl, 'u')
                 return Utils.apiResponse(res, clientController.getAllClient())
             }
         ),
         this.app.get(
             '/client/get/:id',
+            JwtMiddleware.checktoken,
             (req, res)=>{
                 let idClient = req.params.id
                 return Utils.apiResponse(res, clientController.getOneClientbyId(idClient))
@@ -41,6 +43,7 @@ class clientRoutes extends Routerjs{
 
         this.app.post(
             '/client/add',
+            JwtMiddleware.checktoken,
             ClientData.register(),
             ClientData.existClient,
             (req, res)=>{
@@ -52,6 +55,7 @@ class clientRoutes extends Routerjs{
 
         this.app.post(
             '/client/update/:id',
+            JwtMiddleware.checktoken,
             ClientData.existClientTrue,
             (req, res)=>{
                 let newClientData = req.body
@@ -62,6 +66,7 @@ class clientRoutes extends Routerjs{
 
         this.app.get(
             '/client/delete/:id',
+            JwtMiddleware.checktoken,
             ClientData.existClientId,
             (req, res)=>{
                 let idClient = req.params.id

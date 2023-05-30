@@ -53,6 +53,21 @@ class JwtMiddleware{
         
         return accesstoken
     }
+    
+    static verifyLevel(accesLvl, accesRequired){
+        let splitedAccess = accesLvl.split('-')
+        for (let i = 0; i < splitedAccess.length; i++) {
+            console.log(splitedAccess[i])
+            if(splitedAccess[i]==accesRequired){
+                //console.log(true)
+                return true
+            }
+            
+            
+        }
+        //console.log(false)
+        return false
+    }
 }
 
 module.exports = JwtMiddleware

@@ -2,6 +2,7 @@ const {Routerjs}= require('../../../core/router')
 const {Utils} = require('../../../utils')
 const { interventionController} = require('../http/controller')
 const  {InterventionData}=require('../http/middleware')
+const {JwtMiddleware} = require('../../../utils')
 
 class InterventionsRoutes extends Routerjs{
     constructor(app){
@@ -16,11 +17,15 @@ class InterventionsRoutes extends Routerjs{
             }))
         })
 
-        this.app.get('/interventions/ligne-interventions', (req, res)=>{
+        this.app.get(
+            '/interventions/ligne-interventions', 
+            JwtMiddleware.checktoken,
+            (req, res)=>{
             return Utils.apiResponse(res, interventionController.getAllInterventions())
         })
         this.app.get(
             '/interventions/ligne-intervention/:id_intervention', 
+            JwtMiddleware.checktoken,
             (req, res)=>{
                 let id_intervention = req.params.id_intervention
                 return Utils.apiResponse(res, interventionController.getOneInterventionsLine(id_intervention))
