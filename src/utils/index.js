@@ -1,3 +1,4 @@
 const config = require('./config')
 const Utils = require('./utils')
-module.exports = { config, Utils}
+const JwtMiddleware = require('./jwt.middleware')
+module.exports = { config, Utils, JwtMiddleware}

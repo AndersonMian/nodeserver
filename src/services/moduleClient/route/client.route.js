@@ -5,6 +5,7 @@ const { body } = require('express-validator')
 const {Validator} = require('../../moduleUser/http/middleware')
 const {ClientData} = require('../http/middleware')
 const cors = require('cors')
+const JwtMiddleware = require('../../../utils/jwt.middleware')
 
 class clientRoutes extends Routerjs{
     constructor(app){
@@ -12,7 +13,7 @@ class clientRoutes extends Routerjs{
     }
 
     getRoutes(){
-        this.app.use(cors)
+        /*this.app.use(cors)*/
         this.app.get(
             '/test/client', 
             (_req, res)=>{
@@ -25,6 +26,7 @@ class clientRoutes extends Routerjs{
 
         this.app.get(
             '/client/all',
+            JwtMiddleware.checktoken,
             (req, res)=>{
                 return Utils.apiResponse(res, clientController.getAllClient())
             }

@@ -1,6 +1,7 @@
 const { mysqlHelper } = require('../../../../core/db')
 const {query, cdg}=require('../../../model')
 const bcrypt = require('bcrypt')
+const JwtMiddleware = require('../../../../utils/jwt.middleware')
 
 const connexion = mysqlHelper.getInstance()
 
@@ -39,7 +40,20 @@ const technicienController={
         if(!onTechnicien || !passwordIsValid)
             return Promise.resolve({status:402, error: true, message: "Email ou mot de passe incorrect", data: null})
 
-        return Promise.resolve({status:200, error: false, message: "Un utilisateur", data: onTechnicien})
+        
+        const accesstoken = JwtMiddleware.generateToken({
+            idTech: onTechnicien.data[0].idTech,
+            nom: onTechnicien.data[0].nom,
+            prenom: onTechnicien.data[0].prenom,
+            email: onTechnicien.data[0].email,
+            contact: onTechnicien.data[0].contact,
+            nomUser: onTechnicien.data[0].nomUser,
+            accesLvl:onTechnicien.data[0].accesLvl,
+            dateCreation: onTechnicien.data[0].dateCreation,
+            dateModification: onTechnicien.data[0].dateModification,
+        })
+
+        return Promise.resolve({status:200, error: false, message: "Un utilisateur", data: accesstoken})
     }
 }
 
