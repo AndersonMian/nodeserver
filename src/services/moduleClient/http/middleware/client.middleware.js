@@ -9,7 +9,7 @@ class ClientData{
     static register(){
         return[
             body('nomEntreprie').not().isEmpty().withMessage('veuillez entrer le nom de l\'entreprise'),
-            body('prelocalisationnom').not().isEmpty().withMessage('veuillez entrer la localisation de l\'entreprise'),
+            body('localisation').not().isEmpty().withMessage('veuillez entrer la localisation de l\'entreprise'),
         ]
     }
 
@@ -26,8 +26,8 @@ class ClientData{
         const sql = 'SELECT * FROM client WHERE nomEntreprie = ?';
         const oneClient = await query(connexion, sql, [newClient]);
 
-        
-        if(oneClient.data)
+        console.log(oneClient)
+        if(oneClient.data.length!==0)
             return Utils.apiResponse(res, Promise.resolve({
                 status: 422,
                 message: "Le client exist déja",

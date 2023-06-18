@@ -45,6 +45,7 @@ class clientRoutes extends Routerjs{
             '/client/add',
             JwtMiddleware.checktoken,
             ClientData.register(),
+            Validator.validate,
             ClientData.existClient,
             (req, res)=>{
                 let newClient = req.body

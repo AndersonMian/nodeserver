@@ -7,7 +7,7 @@ const connexion = mysqlHelper.getInstance()
 const clientController ={
     create: async(client)=>{
 
-        const sql = 'INSERT INTO client (nomEntreprie, localisation, dateCreation,dateModification) VALUES(?,?,NOW(),NOW())';
+        const sql = 'INSERT INTO client (nomEntreprie, localisation,statusClientNovago, dateCreation,dateModification) VALUES(?,?,1,NOW(),NOW())';
         const result = await query(connexion, sql, [
             client.nomEntreprie,
             client.localisation
@@ -17,11 +17,12 @@ const clientController ={
     },
 
     update: async(client, idClt)=>{
-        const sql = 'UPDATE client SET nomEntreprie=?, localisation=?,dateModification=NOW() WHERE idClt=?';
+        const sql = 'UPDATE client SET nomEntreprie=?, localisation=?,statusClientNovago=?,dateModification=NOW() WHERE idClt=?';
         
         const result = await query(connexion, sql, [
             client.nomEntreprie,
             client.localisation,
+            client.statusClientNovago,
             idClt
         ])
 

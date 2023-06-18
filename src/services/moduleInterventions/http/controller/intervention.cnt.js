@@ -14,8 +14,13 @@ const interventionController={
         return Promise.resolve({status:200, error: false, message: "Ajout d'un nouvel interlocuteur", data: result.data})
     },
     getAllInterventions: async()=>{
-        const sql = `
-        SELECT 
+        const sql = 
+        `SELECT 
+            intrv.idinterv as intervention_id, 
+            intrv.motif_intervention as intervention_motif, 
+            intrv.status_intervention as intervention_status,
+            intrv.dateCreation as date_intervention_add, 
+            intrv.dateModification as date_intervention_modif,
             tech.idTech as id_technicien, 
             tech.nom as technicien_nom, 
             tech.prenom as technicien_prenom, 
@@ -23,16 +28,14 @@ const interventionController={
             terl.nom as interlocuteur_nom, 
             terl.prenom as interlocuteur_prenom, 
             terl.service as interlocuteur_service, 
-            clt.nomEntreprie as nom_entreprise,
-            intrv.idinterv as intervention_id, 
-            intrv.motif_intervention as intervention_motif, 
-            intrv.status_intervention as intervention_status,
-            intrv.dateCreation as date_intervention_add, 
-            intrv.dateModification as date_intervention_modif 
+            clt.nomEntreprie as nom_entreprise
+            
         FROM interventions intrv
         INNER JOIN technicien tech ON intrv.technicien_id = tech.idTech
         INNER JOIN interlocuteur terl ON intrv.interlocuteur_id = terl.idInterl
-        INNER JOIn client clt ON terl.idClient = clt.idClt`
+        INNER JOIN client clt ON terl.idClient = clt.idClt
+        ORDER BY intrv.dateCreation DESC
+        `
 
         const lignesInterventions = await query(connexion, sql)
         return Promise.resolve({status:200, error: false, message: 'lignes Interventions', data: lignesInterventions.data})

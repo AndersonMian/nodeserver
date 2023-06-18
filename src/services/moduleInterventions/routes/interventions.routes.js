@@ -1,8 +1,8 @@
 const {Routerjs}= require('../../../core/router')
-const {Utils} = require('../../../utils')
+const {Utils,MulterMiddleware,JwtMiddleware} = require('../../../utils')
 const { interventionController} = require('../http/controller')
 const  {InterventionData}=require('../http/middleware')
-const {JwtMiddleware} = require('../../../utils')
+const {ImageController}=require('../../moduleImage/http/controller')
 
 class InterventionsRoutes extends Routerjs{
     constructor(app){
@@ -32,19 +32,51 @@ class InterventionsRoutes extends Routerjs{
         })
 
         this.app.post(
-            '/interventions/add/:idTechnicien/:idInterlocuteur',
-            InterventionData.existTechnicien, 
+            '/interventions/add/:idInterlocuteur',
+            JwtMiddleware.checktoken,
             InterventionData.existInterlocuteur,
             InterventionData.verificationStatus, 
             (req, res)=>{
                 let data = req.body
-                let onTechnicien = req.params.idTechnicien
+                let onTechnicien =  req.technicien
                 let oneInterlocuteur = req.params.idInterlocuteur
             return Utils.apiResponse(res, interventionController.create({
                 interlocuteur_id:oneInterlocuteur,
                 technicien_id: onTechnicien,
                 status_intervention: data.status_intervention
             }))
+        })
+
+        this.app.post(
+            '/interventions/update-image/:idIntervention',
+            JwtMiddleware.checktoken,
+            MulterMiddleware.multipleImage,
+            async (req, res)=>{
+                let oneIntervention = req.params.idIntervention
+                console.log(oneIntervention)
+
+                let resultISaveImage
+                const Img = req.files ? req.files: []
+                if(Img.length===0){
+                    return Utils.apiResponse(res, Promise.resolve({
+                        status: 422,
+                        message: "Pas d'image sélectionné",
+                        data: null,
+                        error: true
+                    }))
+                }
+
+                if(Img.length!==0){
+                    resultISaveImage = await ImageController.saveImageMultiple(Img)
+                }
+                let resultInsertImage =[]
+                for(let i =0; i<resultISaveImage.data.length; i++){
+                   let result = await ImageController.insertImage(oneIntervention,resultISaveImage.data[i])
+                   resultInsertImage.push(result.data)
+                }
+                console.log(resultInsertImage)
+
+            return Utils.apiResponse(res, Promise.resolve({status: 200, error:false, data: resultInsertImage}))
         })
     }
 }
